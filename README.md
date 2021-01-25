@@ -2,7 +2,7 @@
 
 Version: 0.8.0
 
-This tool, version 0.8.0, was intended for the in silico assessment of Sequence Based Typing alleles for Legionella pneumophila whole genome sequenced isolates using the Illumina MiSeq sequencing platform. The input requirement is paired end data with 250 bp length. The [InSilicoAllele_DataSet_Assessment_2019.xlsx](./data/InSilicoAllele_DataSet_Assessment_2019.xlsx) document should be used as a guide for allele accuracy.
+This tool, version 0.8.0, was intended for the in silico assessment of Sequence Based Typing alleles for Legionella pneumophila whole genome sequenced isolates using the Illumina MiSeq sequencing platform. The input requirement is paired end data with 250 bp length. The [InSilicoAllele_DataSetAssessment_2019.xlsx](./data/InSilicoAllele_DataSetAssessment_2019.xlsx) document should be used as a guide for allele accuracy.
 
 The allele sequences and schema profiles represented sequences and profile from 2020-06-24. Any new allele sequence and ST profile after this data will not be included in this version of the tool, until the updated version is released. In the event that an allele or ST has 'NF' determination the user should go to the EWGLI database to verify that the allele or ST profile is potentially a new ST or allele identified.
 
@@ -20,57 +20,16 @@ In order to execute this workflow please ensure that your computing environment 
 
 ## Running the Pipeline Script
 
-```
-ulimit -s 5248800
-./pipeline.sh --reference=./supportFiles/Phila_NC_002942.fna --gff=./supportFiles/NC_002942.gff --r1=./test-samples/sample_R1.fastq --r2=./test-samples/sample_R2.fastq --isolate=sample --output=./output
-```
 ## Building the Docker Container
 
 ### CDC Users
 
-For users in the CDC environment, build the docker container by running the `build.sh` script:
-
-```
-./build.sh --tag=lpserogroup_prediction:0.2
-```
-
-The `--tag` parameter is optional and has a default value of `lpserogroup_prediction:0.2`.
 
 ### External Users
 
-For external users, build the container using ``Dockerfile.external``:
-
-```
-docker build -t lpserogroup_prediction:0.2 -f Dockerfile.external .
-```
 
 ## Docker UID and GID
 
-The docker container will create the output files with the same UID and GID as the output directory, so it is important to create the output directory as yourself (not as root) prior to running the docker container. The wrapper script automatically creates the output directory. 
-
-## Running the Docker Container
-
-The container can be run directly as follows:
-
-```
-mkdir output   # the output directory must be created prior to running the docker container
-ulimit -s 5248800
-docker run -v $(pwd)/test-samples:/data -v $(pwd)/output:/output --privileged --rm lpserogroup_prediction:0.2 --r1=/data/sample_R1.fastq --r2=/data/sample_R2.fastq --isolate=sample
-```
-
-Or the container can be run from the wrapper script:
-
-```
-./wrapper.sh --docker=lpserogroup_prediction:0.2 --r1=./test-samples/sample_R1.fastq --r2=./test-samples/sample_R2.fastq --isolate=sample --output=./output
-```
- 
-Or you can pull the container from:
- 
-```
-docker pull smorrison42/lpserogroup_prediction:0.2
-```
-
-The wrapper script creates the output directory and sets the ulimit.
 
 ## Developed by
 
