@@ -37,7 +37,7 @@ In order to execute this workflow please ensure that your computing environment 
 
 [John Phan](https://github.com/jhphan)
 
-[Jason Caravas](JCaravas@cdc.gov)
+[Jason Caravas](mailto:JCaravas@cdc.gov)
 
 ## License
 
