@@ -1,5 +1,5 @@
 
-FROM jhphan/geneflow:1.7.0--sing3.3.0-rc.2
+FROM geneflow/geneflow:2.2.1--sing3.7.1
 
 WORKDIR /workflow
 COPY . /workflow
