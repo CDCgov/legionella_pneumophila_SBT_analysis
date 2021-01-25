@@ -1,0 +1,241 @@
+%YAML 1.1
+---
+gfVersion: v2.0
+class: workflow
+
+name: PRS <em>Legionella pneumophila in silico</em> SBT extraction
+description: Extraction of <em>Legionella pneumophila</em> sequence type (ST) from whole genome
+  sequenced isolates. Data input is Illumina MiSeq paired-end.
+git: https://github.com/CDCgov/legionella_pneumophila_SBT_analysis
+version: '0.8.0'
+
+inputs:
+  input-folder:
+    label: Input Directory
+    description: Input directory containing FASTQ files
+    type: Directory
+    default: ./data/input
+    enable: true
+    visible: true
+  mlst-db:
+    label: MLST Database
+    description: MLST database FASTA file
+    type: File
+    default: ./data/Profile_seq_20200624.fasta
+    enable: false
+    visible: true
+  mlst-definitions:
+    label: MLST Definitions
+    description: MLST definitions file
+    type: File
+    default: ./data/Profile_schema_final_20200624.txt
+    enable: false
+    visible: true
+  reference-sequence:
+    label: Reference Sequence
+    description: Reference sequence FASTA file
+    type: File
+    default: ./data/NC_009494_Corby.fna
+    enable: false
+    visible: true
+
+parameters:
+  cutadapt-1-adaptorB:
+    label: "Cutadapt 5'/3' Adaptor for First Pass"
+    description: "Cutadapt 5' or 3' adaptor to be removed in the first pass"
+    type: string
+    default: AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC
+    enable: false
+    visible: true
+  cutadapt-2-adaptorB:
+    label: "Cutadapt 5'/3' Adaptor for Second Pass"
+    description: "Cutadapt 5' or 3' adaptor to be removed in the second pass"
+    type: string
+    default: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT
+    enable: false
+    visible: true
+  cutadapt-errorRate:
+    label: Cutadapt Error Rate
+    description: Cutadapt error rate
+    type: float
+    default: 0.03
+    enable: false
+    visible: true
+  cutadapt-minimumLength:
+    label: Cutadapt Minimum Length
+    description: Cutadapt minimum length
+    type: int
+    default: 75
+    enable: false
+    visible: true
+  cutadapt-qualityCutoff:
+    label: Cutadapt Quality Cutoff
+    description: Cutadapt quality cutoff
+    type: int
+    default: 25
+    enable: false
+    visible: true
+  mlst-maxmismatch:
+    label: MLST Max Mismatch
+    description: MLST max mismatch
+    default: 0
+    enable: false
+    visible: true
+
+final_output:
+- bowtie2-align
+- fastqc-1
+- fastqc-2
+- srst-1
+- srst-2
+
+apps:
+  bowtie2-build:
+    git: https://gitlab.com/geneflow/apps/bowtie2-build-gf2.git
+    version: '2.4.1-01'
+
+  bowtie2-align:
+    git: https://gitlab.com/geneflow/apps/bowtie2-align-gf2.git
+    version: '2.4.1-01'
+
+  fastqc:
+    git: https://gitlab.com/geneflow/apps/fastqc-gf2.git
+    version: '0.11.9-02'
+
+  cutadapt:
+    git: https://gitlab.com/geneflow/apps/cutadapt-gf2.git
+    version: '2.1-02'
+
+  momps-allele-extract:
+    git: https://gitlab.com/geneflow/apps/legionella-momps-allele-extract-gf2.git
+    version: '0.2-01'
+
+  srst:
+    git: https://gitlab.com/geneflow/apps/legionella-srst2-gf2.git
+    version: '0.2-01'
+
+steps:
+  bowtie2-build:
+    app: bowtie2-build
+    depend: []
+    template:
+      output: reference
+      reference: ${workflow->reference-sequence}
+
+  fastqc-1:
+    app: fastqc
+    depend: []
+    map:
+      uri: ${workflow->input-folder}
+      regex: ^(?!_log)(.*)_(R|)1(.*)\.((fastq|fq)(|\.gz))$
+    template:
+      input: ${workflow->input-folder}/${1}_${2}1${3}.${4}
+      pair: ${workflow->input-folder}/${1}_${2}2${3}.${4}
+      output: ${1}
+
+  cutadapt-1:
+    app: cutadapt
+    depend: []
+    map:
+      uri: ${workflow->input-folder}
+      regex: ^(?!_log)(.*)_(R|)1(.*)\.((fastq|fq)(|\.gz))$
+    template:
+      adaptor_b: ${workflow->cutadapt-1-adaptorB}
+      error_rate: ${workflow->cutadapt-errorRate}
+      input: ${workflow->input-folder}/${1}_${2}1${3}.${4}
+      pair: ${workflow->input-folder}/${1}_${2}2${3}.${4}
+      minimum_length: ${workflow->cutadapt-minimumLength}
+      quality_cutoff: ${workflow->cutadapt-qualityCutoff}
+      output: ${1}
+
+  cutadapt-2:
+    app: cutadapt
+    depend:
+    - cutadapt-1
+    map:
+      uri: ${cutadapt-1->output}
+      regex: ^(?!_log)(.*)
+    template:
+      adaptor_b: ${workflow->cutadapt-2-adaptorB}
+      error_rate: ${workflow->cutadapt-errorRate}
+      input: ${cutadapt-1->output}/${1}/${1}_R1.fastq
+      pair: ${cutadapt-1->output}/${1}/${1}_R2.fastq
+      minimum_length: ${workflow->cutadapt-minimumLength}
+      quality_cutoff: ${workflow->cutadapt-qualityCutoff}
+      output: ${1}
+
+  fastqc-2:
+    app: fastqc
+    depend:
+    - cutadapt-2
+    map:
+      uri: ${cutadapt-2->output}
+      regex: ^(?!_log)(.*)
+    template:
+      input: ${cutadapt-2->output}/${1}/${1}_R1.fastq
+      pair: ${cutadapt-2->output}/${1}/${1}_R2.fastq
+      output: ${1}
+
+  bowtie2-align:
+    app: bowtie2-align
+    depend:
+    - bowtie2-build
+    - cutadapt-2
+    map:
+      uri: ${cutadapt-2->output}
+      regex: ^(?!_log)(.*)
+    template:
+      input: ${cutadapt-2->output}/${1}/${1}_R1.fastq
+      pair: ${cutadapt-2->output}/${1}/${1}_R2.fastq
+      output: ${1}.sam
+      reference: ${bowtie2-build->output}/reference
+
+  srst-1:
+    app: srst
+    depend:
+    - cutadapt-2
+    map:
+      uri: ${cutadapt-2->output}
+      regex: ^(?!_log)(.*)
+    template:
+      forward: _R1
+      input: ${cutadapt-2->output}/${1}/${1}_R1.fastq
+      pair: ${cutadapt-2->output}/${1}/${1}_R2.fastq
+      mlst_db: ${workflow->mlst-db}
+      mlst_definitions: ${workflow->mlst-definitions}
+      mlst_max_mismatch: ${workflow->mlst-maxmismatch}
+      output: ${1}
+      output_basename: PRS_pipeline_SBT
+      reverse: _R2
+
+  momps-allele-extract:
+    app: momps-allele-extract
+    depend:
+    - bowtie2-align
+    - cutadapt-2
+    map:
+      uri: ${bowtie2-align->output}
+      regex: ^(?!_log)(.*).sam
+    template:
+      samfile: ${bowtie2-align->output}/${1}.sam
+      input: ${cutadapt-2->output}/${1}/${1}_R1.fastq
+      pair: ${cutadapt-2->output}/${1}/${1}_R2.fastq
+      output: ${1}
+
+  srst-2:
+    app: srst
+    depend:
+    - momps-allele-extract
+    map:
+      uri: ${momps-allele-extract->output}
+      regex: ^(?!_log)(.*)
+    template:
+      forward: _R1
+      input: ${momps-allele-extract->output}/${1}/${1}_R1.fastq_allocCigar
+      pair: ${momps-allele-extract->output}/${1}/${1}_R2.fastq_allocCigar
+      mlst_db: ${workflow->mlst-db}
+      mlst_definitions: ${workflow->mlst-definitions}
+      mlst_max_mismatch: ${workflow->mlst-maxmismatch}
+      output: ${1}
+      output_basename: PRS_pipeline_SBT_ReadAnchor_mompS
+      reverse: _R2
