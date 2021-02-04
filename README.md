@@ -10,13 +10,40 @@ THIS IS NOT A CLIA APPROVED TEST.
 
 ## Requirements
 
-In order to execute this workflow please ensure that your computing environment meents the following requirements:
+The workflow can be executed in two ways: 
 
-    1. Linux Operating System
+1. GeneFlow: Installing and running the workflow with GeneFlow, which would enable HPC execution of the workflow. 
 
-    2. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
+2. Docker: Running the containerized version of the workflow.
 
-    3. Docker
+Requirements differ depending on the execution method:
+
+### GeneFlow
+
+To run the workflow with GeneFlow, please ensure that your computing environment meets the following requirements:
+
+1. Linux Operating System
+
+2. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
+
+3. Python 3+
+
+4. Singularity
+
+### Docker
+
+To run the workflow with Docker, please ensure that your computing environment meets the following requirements:
+
+1. Linux Operating System
+
+2. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
+
+3. Docker
+
+## Installing and Running the Workflow with GeneFlow
+
+
+
 
 ## Running the Pipeline Script
 
