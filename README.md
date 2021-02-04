@@ -42,7 +42,14 @@ To run the workflow with Docker, please ensure that your computing environment m
 
 ## Installing and Running the Workflow with GeneFlow
 
+1. First create a Python virtual environment to install dependencies.
 
+    ```bash
+    mkdir -p ~/geneflow
+    cd ~/geneflow
+    python3 -m venv ./gfpy
+    source ./gfpy/bin/activate
+    ```
 
 
 ## Running the Pipeline Script
