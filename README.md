@@ -24,11 +24,15 @@ To run the workflow with GeneFlow, please ensure that your computing environment
 
 1. Linux Operating System
 
-2. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
+2. Git
 
-3. Python 3+
+3. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
 
-4. Singularity
+4. Python 3+
+
+5. Singularity
+
+6. DRMAA library, required for executing the workflow in an HPC environment 
 
 ### Docker
 
@@ -36,21 +40,42 @@ To run the workflow with Docker, please ensure that your computing environment m
 
 1. Linux Operating System
 
-2. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
+2. Git
 
-3. Docker
+3. SquashFS, required for executing Singularity containers - Most standard Linux distributions have SquashFS installed and enabled by default. However, in the event that SquashFS is not enabled, we recommend that you check with your system administrator to install it. Alternatively, you can enable it by following these instructions (warning: these docs are for advanced users): https://www.tldp.org/HOWTO/html_single/SquashFS-HOWTO/
+
+4. Docker
 
 ## Installing and Running the Workflow with GeneFlow
 
-1. First create a Python virtual environment to install dependencies.
+1. First create a Python virtual environment to install dependencies and activate that environment.
 
     ```bash
     mkdir -p ~/geneflow
     cd ~/geneflow
-    python3 -m venv ./gfpy
-    source ./gfpy/bin/activate
+    python3 -m venv ~/geneflow/gfpy
+    source ~/geneflow/gfpy/bin/activate
+    ```
+2. Clone the GeneFlow source repository and install it into the environment.
+
+    ```bash
+    cd ~/geneflow
+    git clone https://github.com/CDCgov/geneflow2
+    pip3 install ~/geneflow/geneflow2
     ```
 
+3. Install the Python DRMAA library if you need to execute the workflow in an HPC environment. Skip this step if you do not need HPC.
+
+    ```bash
+    pip3 install drmaa
+    ```
+
+4. Clone and install the GeneFlow workflow.
+
+    ```bash
+    cd ~/geneflow
+    gf install-workflow --make-apps -g https://github.com/CDCgov/legionella_pneumophila_SBT_analysis workflow
+    ```
 
 ## Running the Pipeline Script
 
