@@ -48,6 +48,8 @@ To run the workflow with Docker, please ensure that your computing environment m
 
 ## Installing and Running the Workflow with GeneFlow
 
+### Install the Workflow and Its Dependencies
+
 1. First create a Python virtual environment to install dependencies and activate that environment.
 
     ```bash
@@ -77,9 +79,43 @@ To run the workflow with Docker, please ensure that your computing environment m
     gf install-workflow --make-apps -g https://github.com/CDCgov/legionella_pneumophila_SBT_analysis workflow
     ```
 
-## Running the Pipeline Script
+    The workflow should now be installed in the `~/geneflow/workflow` directory.
 
-## Building the Docker Container
+### Run the Workflow
+
+To execute the workflow using the included test data, use the following commands:
+
+```bash
+cd ~/geneflow/workflow
+gf --log-level debug run . -o output -n test
+```
+
+These commands will run the workflow using sample data located in the `~/geneflow/workflow/data/input` directory, place the output in the `~/geneflow/workflow/output` directory inside a sub-directory prefixed with `test`. 
+
+### Run the Workflow in an HPC Environment
+
+To execute the workflow in an HPC environment, you must first set the DRMAA library path environment variable. For example:
+
+```bash
+export DRMAA_LIBRARY_PATH=/opt/sge/lib/lx-amd64/libdrmaa2.so
+```
+
+Note that the DRMAA library for your specific scheduler (either UGE/SGE or SLURM) must be installed, and the installed library path may be different in your environment. Once the environment has been configured, execute the workflow as follows:
+
+```bash
+cd ~/geneflow/workflow
+gf --log-level debug run . -o output -n test --ec default:gridengine --ep default.slots:4
+```
+
+The option `default:gridengine` may be replaced with `default:slurm` to use use the SLURM scheduler instead. To set the scheduler queue, specify an additional "execution parameter" (i.e., --ep) as follows:
+
+```bash
+gf --log-level debug run . -o output -n test --ec default:gridengine --ep default.slots:4 default.queue:highmem.q
+```
+
+This command sends workflow jobs to the "highmem.q" queue. 
+
+## Building and Running the Docker Container
 
 ### CDC Users
 
