@@ -58,12 +58,10 @@ To run the workflow with Docker, please ensure that your computing environment m
     python3 -m venv ~/geneflow/gfpy
     source ~/geneflow/gfpy/bin/activate
     ```
-2. Clone the GeneFlow source repository and install it into the environment.
+2. Install GeneFlow.
 
     ```bash
-    cd ~/geneflow
-    git clone https://github.com/CDCgov/geneflow2
-    pip3 install ~/geneflow/geneflow2
+    pip3 install geneflow
     ```
 
 3. Install the Python DRMAA library if you need to execute the workflow in an HPC environment. Skip this step if you do not need HPC.
@@ -116,11 +114,6 @@ gf --log-level debug run . -o output -n test --ec default:gridengine --ep defaul
 This command sends workflow jobs to the "highmem.q" queue. 
 
 ## Building and Running the Docker Container
-
-### CDC Users
-
-
-### External Users
 
 
 ## Docker UID and GID
