@@ -141,11 +141,14 @@ steps:
       regex: ^(?!_log)(.*)_(R|)1(.*)\.((fastq|fq)(|\.gz))$
     template:
       adaptor_b: ${workflow->cutadapt-1-adaptorB}
-      error_rate: ${workflow->cutadapt-errorRate}
+      #error_rate: ${workflow->cutadapt-errorRate}
+      error_rate: 0.03
       input: ${workflow->input-folder}/${1}_${2}1${3}.${4}
       pair: ${workflow->input-folder}/${1}_${2}2${3}.${4}
-      minimum_length: ${workflow->cutadapt-minimumLength}
-      quality_cutoff: ${workflow->cutadapt-qualityCutoff}
+      #minimum_length: ${workflow->cutadapt-minimumLength}
+      minimum_length: 75
+      #quality_cutoff: ${workflow->cutadapt-qualityCutoff}
+      quality_cutoff: 25
       output: ${1}
 
   cutadapt-2:
@@ -157,11 +160,14 @@ steps:
       regex: ^(?!_log)(.*)
     template:
       adaptor_b: ${workflow->cutadapt-2-adaptorB}
-      error_rate: ${workflow->cutadapt-errorRate}
+      #error_rate: ${workflow->cutadapt-errorRate}
+      error_rate: 0.03
       input: ${cutadapt-1->output}/${1}/${1}_R1.fastq
       pair: ${cutadapt-1->output}/${1}/${1}_R2.fastq
-      minimum_length: ${workflow->cutadapt-minimumLength}
-      quality_cutoff: ${workflow->cutadapt-qualityCutoff}
+      #minimum_length: ${workflow->cutadapt-minimumLength}
+      minimum_length: 75
+      #quality_cutoff: ${workflow->cutadapt-qualityCutoff}
+      quality_cutoff: 25
       output: ${1}
 
   fastqc-2:
@@ -203,7 +209,8 @@ steps:
       pair: ${cutadapt-2->output}/${1}/${1}_R2.fastq
       mlst_db: ${workflow->mlst-db}
       mlst_definitions: ${workflow->mlst-definitions}
-      mlst_max_mismatch: ${workflow->mlst-maxmismatch}
+      #mlst_max_mismatch: ${workflow->mlst-maxmismatch}
+      mlst_max_mismatch: 0
       output: ${1}
       output_basename: PRS_pipeline_SBT
       reverse: _R2
@@ -235,7 +242,8 @@ steps:
       pair: ${momps-allele-extract->output}/${1}/${1}_R2.fastq_allocCigar
       mlst_db: ${workflow->mlst-db}
       mlst_definitions: ${workflow->mlst-definitions}
-      mlst_max_mismatch: ${workflow->mlst-maxmismatch}
+      #mlst_max_mismatch: ${workflow->mlst-maxmismatch}
+      mlst_max_mismatch: 0
       output: ${1}
       output_basename: PRS_pipeline_SBT_ReadAnchor_mompS
       reverse: _R2
