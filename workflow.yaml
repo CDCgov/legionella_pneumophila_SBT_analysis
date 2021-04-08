@@ -7,7 +7,7 @@ name: PRS <em>Legionella pneumophila in silico</em> SBT extraction
 description: Extraction of <em>Legionella pneumophila</em> sequence type (ST) from whole genome
   sequenced isolates. Data input is Illumina MiSeq paired-end.
 git: https://github.com/CDCgov/legionella_pneumophila_SBT_analysis
-version: '0.8.0'
+version: '0.8.1'
 
 inputs:
   input-folder:
@@ -96,7 +96,7 @@ apps:
 
   bowtie2-align:
     git: https://gitlab.com/geneflow/apps/bowtie2-align-gf2.git
-    version: '2.4.1-01'
+    version: '2.4.1-02'
 
   fastqc:
     git: https://gitlab.com/geneflow/apps/fastqc-gf2.git

@@ -1,8 +1,8 @@
 # Legionella pneumophila SBT Analysis
 
-Version: 0.8.0
+Version: 0.8.1
 
-This tool, version 0.8.0, was intended for the in silico assessment of Sequence Based Typing alleles for Legionella pneumophila whole genome sequenced isolates using the Illumina MiSeq sequencing platform. The input requirement is paired end data with 250 bp length. The [InSilicoAllele_DataSetAssessment_2019.xlsx](./data/InSilicoAllele_DataSetAssessment_2019.xlsx) document should be used as a guide for allele accuracy.
+This tool, version 0.8.1, was intended for the in silico assessment of Sequence Based Typing alleles for Legionella pneumophila whole genome sequenced isolates using the Illumina MiSeq sequencing platform. The input requirement is paired end data with 250 bp length. The [InSilicoAllele_DataSetAssessment_2019.xlsx](./data/InSilicoAllele_DataSetAssessment_2019.xlsx) document should be used as a guide for allele accuracy.
 
 The allele sequences and schema profiles represented sequences and profile from 2020-06-24. Any new allele sequence and ST profile after this data will not be included in this version of the tool, until the updated version is released. In the event that an allele or ST has 'NF' determination the user should go to the EWGLI database to verify that the allele or ST profile is potentially a new ST or allele identified.
 
